@@ -14,4 +14,14 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void test_conv() {
+        double[] A = {1,2,3};
+        double[] B = {4,5,6,7};
+        double[] C = SignalProcessingUtil.conv(A, B);
+        for (double c: C)
+            System.out.println(c);
+        assertEquals(4, 2 + 2);
+    }
 }
