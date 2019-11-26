@@ -1,6 +1,4 @@
-package com.example.asoustic_motion_tracking_receiver;
-
-import java.util.Arrays;
+package com.example.acoustic_motion_tracking_receiver;
 
 import static java.lang.Math.max;
 

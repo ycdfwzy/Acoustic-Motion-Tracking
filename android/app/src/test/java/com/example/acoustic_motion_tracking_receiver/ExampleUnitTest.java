@@ -1,4 +1,4 @@
-package com.example.asoustic_motion_tracking_receiver;
+package com.example.acoustic_motion_tracking_receiver;
 
 import org.junit.Test;
 

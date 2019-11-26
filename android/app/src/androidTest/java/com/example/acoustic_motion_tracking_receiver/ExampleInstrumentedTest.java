@@ -1,4 +1,4 @@
-package com.example.asoustic_motion_tracking_receiver;
+package com.example.acoustic_motion_tracking_receiver;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.asoustic_motion_tracking_receiver", appContext.getPackageName());
+        assertEquals("com.example.acoustic_motion_tracking_receiver", appContext.getPackageName());
     }
 }
