@@ -9,6 +9,7 @@ public class FMCW {
     public static double f0 = 18000;
     public static double f1 = 20500;
     public static double[] chirp_data = SignalProcessingUtil.chirp_linear(fs, f0, T, f1);
+    public static int FFTlen = 1024 * 16;  // reduce FFTlen if too slow
 
     public static double[] pseudo_T = null;
 
@@ -42,7 +43,6 @@ public class FMCW {
             s[i] = pseudo_T[i] * filtered_signal[start_idx+i];
 
         // fft to get distance
-        int FFTlen = 1024 * 64;
         Complex[] tmp_s = new Complex[FFTlen];
         for (int i = len/2; i < FFTlen; i++)
             tmp_s[i] = new Complex();
