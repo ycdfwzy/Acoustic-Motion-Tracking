@@ -87,6 +87,20 @@ public class SignalProcessingUtil {
         return res;
     }
 
+    public static double[] chirp_linear(double fs, double f0, double T, double f1) {
+        double PI = Math.acos(-1);
+        double[] signal = new double[(int)(T*fs)+1];
+        double u = (f1-f0)/T;
+        double t = 0;
+        int idx = 0;
+        while (t <= T) {
+            signal[idx] = Math.cos(2*PI*(f0*t+0.5*u*t*t));
+            idx += 1;
+            t += 1./fs;
+        }
+        return signal;
+    }
+
     // calculate convolution of X × Y
     public static double[] conv(double[] X, double[] Y) {
         int n = max(X.length, Y.length);

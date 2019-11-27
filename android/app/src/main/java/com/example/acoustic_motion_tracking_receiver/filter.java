@@ -3,6 +3,7 @@ package com.example.acoustic_motion_tracking_receiver;
 public class filter {
     public int idx, taps;
     public double[] h, samples;
+
     public filter(int taps, double f1, double f2, String type, String window)
     {
         this.idx = 0;

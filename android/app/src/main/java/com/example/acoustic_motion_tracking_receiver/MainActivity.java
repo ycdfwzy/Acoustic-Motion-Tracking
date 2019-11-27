@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        double fs = 1000, f1 = 50/fs, f2 = 100/fs;
+                        double fs = 1000, f1 = 40/fs, f2 = 80/fs;
                         int m=800;
                         filter bp_filter = new filter(m, f1, f2, "bp", "hamming");
                         double[] h_bp = bp_filter.get_coeff();
