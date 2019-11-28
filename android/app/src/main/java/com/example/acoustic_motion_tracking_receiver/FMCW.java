@@ -1,14 +1,14 @@
 package com.example.acoustic_motion_tracking_receiver;
 
 public class FMCW {
-    public static int total = 8;
+    public static int total = 4;
     public static double fs = 44100;
     public static double T = 0.04;
     public static double f0 = 18000;
     public static double f1 = 20500;
     public static int len = ((int)(fs*T)+1)*2;
     public static double[] chirp_data = SignalProcessingUtil.chirp_linear(fs, f0, T, f1);
-    public static int FFTlen = 1024 * 16;  // reduce FFTlen if too slow
+    public static int FFTlen = 1024 * 8;  // reduce FFTlen if too slow
 
     public static double[] pseudo_T = null;
 

@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         Queue<Double> buffer = new LinkedList<>();
                         try {
                             // get start
-                            for (int i = 0; (i < FMCW.total * FMCW.len * 3) && isRecording; i++) {
+                            for (int i = 0; (i < FMCW.total * FMCW.len * 2) && isRecording; i++) {
                                 if (!queue.isEmpty()) {
                                     buffer.add(queue.take());
                                 } else
@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if (!isRecording) return;
                             Object[] tmp = buffer.toArray();
-                            double[] pre_data = new double[FMCW.total * FMCW.len * 3];
-                            for (int i = 0; i < FMCW.total * FMCW.len * 3; i++)
+                            double[] pre_data = new double[FMCW.total * FMCW.len * 2];
+                            for (int i = 0; i < FMCW.total * FMCW.len * 2; i++)
                                 pre_data[i] = (double) tmp[i];
                             int start_idx = FMCW.get_start(pre_data);
                             for (int i = 0; i < start_idx; i++) {
