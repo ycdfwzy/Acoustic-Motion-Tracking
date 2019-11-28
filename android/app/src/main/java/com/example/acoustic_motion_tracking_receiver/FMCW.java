@@ -33,7 +33,7 @@ public class FMCW {
                 pseudos[i] = new double[len*total];
 
                 for (int j = 0; j < total; j++) {
-                    System.arraycopy(chirps[i], 0, pseudos[i][j], len*j, chirps[i].length);
+                    System.arraycopy(chirps[i], 0, pseudos[i], len*j, chirps[i].length);
                 }
             }
         }
