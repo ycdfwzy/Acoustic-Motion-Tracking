@@ -41,12 +41,13 @@ public class MainActivity extends AppCompatActivity {
         GetPermission();
 
         final Button start_button, stop_button;
-        final GraphView signal_view;
+        final GraphView signal_view, y_view;
 
         start_button = (Button)findViewById(R.id.start);
         stop_button = (Button)findViewById(R.id.stop);
 
-        signal_view = (GraphView)findViewById(R.id.signal_graph);
+        signal_view = (GraphView)findViewById(R.id.x_graph);
+        y_view = (GraphView)findViewById(R.id.y_graph);
 
         stop_button.setEnabled(false);
 
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 //                        double[] delta_distance = FMCW.get_distance(received_data);
                         double[][] positions = FMCW.cal_position(received_data);
-                        draw_line_graph(signal_view, positions[0], positions[1]);
+                        draw_line_graph(signal_view, positions[0]);
+                        draw_line_graph(y_view, positions[1]);
                     }
                 });
                 thread.start();

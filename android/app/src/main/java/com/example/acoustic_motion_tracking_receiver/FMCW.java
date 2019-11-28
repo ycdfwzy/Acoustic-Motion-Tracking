@@ -3,7 +3,7 @@ package com.example.acoustic_motion_tracking_receiver;
 import java.util.Arrays;
 
 public class FMCW {
-    public static int total = 88;
+    public static int total = 44;
     public static double fs = 44100;
     public static double T = 0.04;
     public static double f0 = 18000;
