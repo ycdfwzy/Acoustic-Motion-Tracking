@@ -21,11 +21,13 @@
         android:text="stop" />
 
     <com.jjoe64.graphview.GraphView
-        android:id="@+id/signal_graph"
+        android:id="@+id/x_graph"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="248dp" />
+        android:layout_height="200dp" />
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/y_graph"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
 </LinearLayout>

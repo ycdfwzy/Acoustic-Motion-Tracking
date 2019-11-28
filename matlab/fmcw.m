@@ -1,8 +1,8 @@
 %% 发送信号生成
 fs = 44100;
 T = 0.04;
-f0 = 18000; % start freq
-f1 = 20500;  % end freq
+f0 = 13500; % start freq
+f1 = 16000;  % end freq
 t = 0:1/fs:T ;
 data = chirp(t, f0, T, f1, 'linear');
 
@@ -11,7 +11,7 @@ for i = 1:88
     output = [output,data,zeros(1,fs*T+1)];
 end
 
-audiowrite('test.wav', [output, output, output], fs);
+audiowrite('low.wav', [output, output, output], fs);
 
 %% 接收信号读取，并滤波
 [mydata,fs] = audioread('chirp.m4a');
