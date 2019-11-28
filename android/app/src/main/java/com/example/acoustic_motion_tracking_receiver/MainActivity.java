@@ -93,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                         {
                             received_data[i] = data_container[i];
                         }
-                        double[] delta_distance = FMCW.get_distance(received_data);
-                        draw_line_graph(signal_view, delta_distance);
+//                        double[] delta_distance = FMCW.get_distance(received_data);
+                        double[][] positions = FMCW.cal_position(received_data);
+                        draw_line_graph(signal_view, positions[0], positions[1]);
                     }
                 });
                 thread.start();

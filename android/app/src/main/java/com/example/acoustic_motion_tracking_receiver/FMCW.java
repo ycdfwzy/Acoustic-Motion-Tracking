@@ -13,6 +13,69 @@ public class FMCW {
 
     public static double[] pseudo_T = null;
 
+
+    public static double[] f0s = {18000, 13500};
+    public static double[] f1s = {20500, 16000};
+    public static double [][] chirps = {SignalProcessingUtil.chirp_linear(fs, f0s[0], T, f1s[0]), SignalProcessingUtil.chirp_linear(fs, f0s[1], T, f1s[2])};
+    public static double[][] pseudos = null;
+
+    public static double[][] cal_position(double[] received_signal)
+    {
+        int dimension = f0s.length;
+        double[][] res = new double[dimension][];
+
+        int len = ((int)(fs*T)+1)*2;
+        // pseudo-transmitted signal
+        if (pseudos == null) {
+            pseudos = new double[dimension][];
+            for(int i=0; i<dimension; i++)
+            {
+                pseudos[i] = new double[len*total];
+
+                for (int j = 0; j < total; j++) {
+                    System.arraycopy(chirps[i], 0, pseudos[i][j], len*j, chirps[i].length);
+                }
+            }
+        }
+
+        for(int k=0; k<dimension; k++)
+        {
+            // filtering
+            double[] filtered_signal = filtering(received_signal, 800, f0s[k]-1000, f1s[k]+1000, fs, "bp", "hamming");
+
+            // find start position
+            int start_idx = 0;
+            double[] c = SignalProcessingUtil.xcorr(filtered_signal, chirps[k]);
+            double max_c = max(c);
+            for (int i = 0; i < c.length; i++) {
+                if (c[i] > max_c/2) {
+                    start_idx = i + 1 - filtered_signal.length;
+                    break;
+                }
+            }
+
+            // dot product
+            double[] s = new double[len*total];
+            for (int i = 0; i < s.length; i++)
+                s[i] = pseudos[k][i] * filtered_signal[start_idx+i];
+
+            // fft to get distance
+            Complex[] tmp_s = new Complex[FFTlen];
+            for (int i = len/2; i < FFTlen; i++)
+                tmp_s[i] = new Complex();
+//            double[] delta_distance = new double[total];
+            res[k] = new double[total];
+            for (int i = 0; i < total; i++) {
+                for (int j = 0; j < len/2; j++)
+                    tmp_s[j] = new Complex(s[i*len+j]);
+                Complex[] FFTout = SignalProcessingUtil.FFT(tmp_s);
+                int max_arg = maxarg(FFTout);
+                res[k][i] = (max_arg+1) * 340 * T / (f1-f0);
+            }
+        }
+        return res;
+    }
+
     public static double[] get_distance(double[] received_signal) {
         int len = ((int)(fs*T)+1)*2;
         // pseudo-transmitted signal
