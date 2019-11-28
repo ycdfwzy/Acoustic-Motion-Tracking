@@ -1,7 +1,10 @@
 package com.example.acoustic_motion_tracking_receiver;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        GetPermission();
 
         final Button start_button, stop_button;
         final GraphView signal_view;
@@ -104,6 +109,25 @@ public class MainActivity extends AppCompatActivity {
                 stop_button.setEnabled(false);
             }
         });
+    }
+
+    private void GetPermission() {
+
+        /*在此处插入运行时权限获取的代码*/
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)!=
+                PackageManager.PERMISSION_GRANTED||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=
+                        PackageManager.PERMISSION_GRANTED||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!=
+                        PackageManager.PERMISSION_GRANTED
+        )
+        {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.RECORD_AUDIO,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        }
     }
 
     private void draw_line_graph(GraphView line_view, double[] ys)

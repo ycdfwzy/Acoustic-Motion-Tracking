@@ -64,6 +64,7 @@ public class FMCW {
 
         double[] bp_filtered_sig = new double[raw_signal.length];
         for(int i=0; i<raw_signal.length; i++) {
+            if (i%100==0) System.out.println(i);
             bp_filtered_sig[i] = bp_filter.filter(raw_signal[i]);
         }
         return bp_filtered_sig;
