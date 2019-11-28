@@ -16,7 +16,7 @@ public class FMCW {
 
     public static double[] f0s = {18000, 13500};
     public static double[] f1s = {20500, 16000};
-    public static double [][] chirps = {SignalProcessingUtil.chirp_linear(fs, f0s[0], T, f1s[0]), SignalProcessingUtil.chirp_linear(fs, f0s[1], T, f1s[2])};
+    public static double [][] chirps = {SignalProcessingUtil.chirp_linear(fs, f0s[0], T, f1s[0]), SignalProcessingUtil.chirp_linear(fs, f0s[1], T, f1s[1])};
     public static double[][] pseudos = null;
 
     public static double[][] cal_position(double[] received_signal)
@@ -33,7 +33,7 @@ public class FMCW {
                 pseudos[i] = new double[len*total];
 
                 for (int j = 0; j < total; j++) {
-                    System.arraycopy(chirps[i], 0, pseudos[i][j], len*j, chirps[i].length);
+                    System.arraycopy(chirps[i], 0, pseudos[i], len*j, chirps[i].length);
                 }
             }
         }
