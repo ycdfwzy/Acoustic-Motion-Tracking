@@ -5,18 +5,24 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.io.FileOutputStream;
 
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     int inputBufferSize = 0;
 
+    MapView map_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
         final Button start_button, stop_button;
         final GraphView signal_view, y_view;
+
+
+        map_view = (MapView) findViewById(R.id.map_graph);
 
         start_button = (Button)findViewById(R.id.start);
         stop_button = (Button)findViewById(R.id.stop);
@@ -59,35 +70,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 start_button.setEnabled(false);
                 stop_button.setEnabled(true);
+//                double[] xs = {0.3, 0.7}, ys = {0.3, 0.7};
+//                test_view.add_points(xs, ys);
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        double fs = 1000, f1 = 40/fs, f2 = 80/fs;
-//                        int m=800;
-//                        filter bp_filter = new filter(m, f1, f2, "bp", "hamming");
-//                        double[] h_bp = bp_filter.get_coeff();
-//                        Complex[] signal = new Complex[(int)fs*10];
-//                        double laps = 10/(10*fs-1), t, f1_demo = 10, f2_demo = 75, f3_demo = 150;
-//
-//                        for(int i=0; i<signal.length; i++)
-//                        {
-//                            t = i*laps;
-//                            signal[i] =new Complex(Math.sin(2*Math.PI*f1_demo*t)+Math.sin(2*Math.PI*f2_demo*t)+Math.sin(2*Math.PI*f3_demo*t));
-//                        }
-//                        Complex[] bp_filtered_sig = new Complex[(int)fs*10];
-//                        double[] xs = new double[signal.length];
-//                        for(int i=0; i<signal.length; i++)
-//                        {
-//                            bp_filtered_sig[i] = new Complex(bp_filter.filter(signal[i].real()));
-//                            xs[i] = i*(fs/(signal.length-1));
-//                        }
-//                        Complex[] fft_sig = SignalProcessingUtil.FFT(signal), filtered_fft = SignalProcessingUtil.FFT(bp_filtered_sig);
-//                        double[] ys = new double[signal.length];
-//                        for(int i=0; i<signal.length; i++)
-//                        {
-//                            ys[i] = filtered_fft[i].abs();
-//                        }
-//                        draw_line_graph(signal_view, xs, ys);
                         int data_len = StartRecord(data_container, limit_len);
                         double[] received_data = new double[data_len];
                         for(int i=0; i<data_len; i++)
@@ -96,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
                         }
 //                        double[] delta_distance = FMCW.get_distance(received_data);
                         double[][] positions = FMCW.cal_position(received_data);
-                        draw_line_graph(signal_view, positions[0]);
-                        draw_line_graph(y_view, positions[1]);
+                        map_view.add_points(positions[0], positions[1]);
+//                        draw_line_graph(signal_view, positions[0]);
+//                        draw_line_graph(y_view, positions[1]);
                     }
                 });
                 thread.start();
@@ -110,8 +98,21 @@ public class MainActivity extends AppCompatActivity {
                 isRecording = false;
                 start_button.setEnabled(true);
                 stop_button.setEnabled(false);
+                
             }
         });
+    }
+
+
+    void draw_map(SurfaceView map_view)
+    {
+
+
+//        Rect test = new Rect();
+//        map_view.getLocalVisibleRect(test);
+//        int a = 1;
+
+
     }
 
     private void GetPermission() {
