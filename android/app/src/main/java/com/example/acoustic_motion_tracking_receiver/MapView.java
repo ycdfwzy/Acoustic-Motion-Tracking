@@ -90,8 +90,8 @@ public class MapView extends View {
         paint.setStrokeWidth(3);
 //        canvas.drawLine(0, (float) height/2, (float) width, (float) height/2, paint);
 //        canvas.drawLine((float)width/2, 0, (float)width/2, (float) height, paint);
-        canvas.drawLine(0, (float) height, (float) width, (float) height, paint);
-        canvas.drawLine(0, 0, 0, (float) height, paint);
+        canvas.drawLine(0, (float) height-1, (float) width, (float) height-1, paint);
+        canvas.drawLine(1, 0, 1, (float) height, paint);
         //绘制
         float[] first = new float[1], second;
         for(int i=0; i<xs.size()-1; i++)
