@@ -37,8 +37,8 @@ public class MapView extends View {
     public void init()
     {
 
-        min_x = -2;
-        min_y = -2;
+        min_x = 0;
+        min_y = 0;
         max_x = 2;
         max_y = 2;
     }
@@ -72,8 +72,8 @@ public class MapView extends View {
         double ori_x = xs.get(idx), ori_y = ys.get(idx);
         draw_pts[0] = (float) (ori_x/(max_x-min_x)*width);
         draw_pts[1] = (float) (ori_y/(max_y-min_y)*height);
-        draw_pts[0]+=width/2;
-        draw_pts[1]+=height/2;
+//        draw_pts[0]+=width/2;
+//        draw_pts[1]+=height/2;
         draw_pts[1] = (float) height-draw_pts[1];
         return draw_pts;
     }
@@ -88,8 +88,10 @@ public class MapView extends View {
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeWidth(3);
-        canvas.drawLine(0, (float) height/2, (float) width, (float) height/2, paint);
-        canvas.drawLine((float)width/2, 0, (float)width/2, (float) height, paint);
+//        canvas.drawLine(0, (float) height/2, (float) width, (float) height/2, paint);
+//        canvas.drawLine((float)width/2, 0, (float)width/2, (float) height, paint);
+        canvas.drawLine(0, (float) height, (float) width, (float) height, paint);
+        canvas.drawLine(0, 0, 0, (float) height, paint);
         //绘制
         float[] first = new float[1], second;
         for(int i=0; i<xs.size()-1; i++)
