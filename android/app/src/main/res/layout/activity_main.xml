@@ -23,9 +23,17 @@
     <com.jjoe64.graphview.GraphView
         android:id="@+id/signal_graph"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="248dp" />
+        android:layout_height="200dp"/>
+
+    <com.example.acoustic_motion_tracking_receiver.MapView
+            android:id="@+id/map_graph"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+    <com.jjoe64.graphview.GraphView
+            android:id="@+id/signal_graph1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
 
 
 </LinearLayout>

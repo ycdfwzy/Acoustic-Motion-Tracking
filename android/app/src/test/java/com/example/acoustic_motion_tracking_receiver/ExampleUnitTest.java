@@ -69,7 +69,7 @@ public class ExampleUnitTest {
         int idx = 0;
         for (String d: data)
             data_array[idx++] = Double.parseDouble(d);
-        double[] delta_distance = FMCW.get_distance(data_array);
+        double[] delta_distance = FMCW.get_distance(data_array, 0);
 //        for (double c: delta_distance)
 //            System.out.println(c);
 

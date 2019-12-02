@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     //是否在录制
     boolean isRecording = false;
 
-    BlockingQueue<Double> queue = new LinkedBlockingQueue<>();
+    BlockingQueue<Double>[] queue = new LinkedBlockingQueue[2];
     Thread producer_thread, consumer_thread;
-    double[] acc_distance = null;
+    double[][] acc_distance = null;
 
     int inputBufferSize = 0;
 
@@ -48,17 +48,22 @@ public class MainActivity extends AppCompatActivity {
         GetPermission();
 
         final Button start_button, stop_button;
-        final GraphView signal_view;
+        final GraphView[] signal_view = new GraphView[2];
+        final MapView map_view;
 
         start_button = (Button)findViewById(R.id.start);
         stop_button = (Button)findViewById(R.id.stop);
 
-        signal_view = (GraphView)findViewById(R.id.signal_graph);
+        signal_view[0] = (GraphView)findViewById(R.id.signal_graph);
+        signal_view[1] = (GraphView)findViewById(R.id.signal_graph1);
 
+        map_view = (MapView)findViewById(R.id.map_graph);
         stop_button.setEnabled(false);
 
         // final int limit_len = 500000;
         // final double[] data_container = new double[limit_len];
+        queue[0] = new LinkedBlockingQueue<>();
+        queue[1] = new LinkedBlockingQueue<>();
 
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,48 +92,71 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // analyze data
-                        Queue<Double> buffer = new LinkedList<>();
+                        Queue<Double>[] buffer = new LinkedList[2];
+                        buffer[0] = new LinkedList<>();
+                        buffer[1] = new LinkedList<>();
+                        int[] start_idx = new int[2];
                         try {
                             // get start
-                            for (int i = 0; (i < FMCW.total * FMCW.len * 2) && isRecording; i++) {
-                                if (!queue.isEmpty()) {
-                                    buffer.add(queue.take());
-                                } else
-                                    i--;
+                            for (int d = 0; d < 2;  d++) {
+                                for (int i = 0; (i < FMCW.total * FMCW.len * 2) && isRecording; i++) {
+                                    if (!queue[d].isEmpty()) {
+                                        buffer[d].add(queue[d].take());
+                                    } else
+                                        i--;
+                                }
+                                if (!isRecording) return;
+                                Object[] tmp = buffer[d].toArray();
+                                double[] pre_data = new double[FMCW.total * FMCW.len * 2];
+                                for (int i = 0; i < FMCW.total * FMCW.len * 2; i++)
+                                    pre_data[i] = (double) tmp[i];
+                                start_idx[d] = FMCW.get_start(pre_data, d);
+
                             }
-                            if (!isRecording) return;
-                            Object[] tmp = buffer.toArray();
-                            double[] pre_data = new double[FMCW.total * FMCW.len * 2];
-                            for (int i = 0; i < FMCW.total * FMCW.len * 2; i++)
-                                pre_data[i] = (double) tmp[i];
-                            int start_idx = FMCW.get_start(pre_data);
-                            for (int i = 0; i < start_idx; i++) {
-                                buffer.poll();
+                            while (Math.abs(start_idx[0] - start_idx[1]) > FMCW.total * FMCW.len / 2) {
+                                if (start_idx[0] > start_idx[1])
+                                    start_idx[1] += FMCW.total * FMCW.len;
+                                else
+                                    start_idx[0] += FMCW.total * FMCW.len;
                             }
+                            for (int d = 0; d < 2; d++)
+                                for (int i = 0; i < start_idx[d]; i++) {
+                                    buffer[d].poll();
+                                }
 
                             // analyze
                             double[] received_data = new double[FMCW.total * FMCW.len];
+                            double[][] delta_distance = new double[2][];
                             while (isRecording) {
-                                while (isRecording && buffer.size() < FMCW.total * FMCW.len) {
-                                    buffer.add(queue.take());
-                                }
-                                if (!isRecording) return;
+                                for (int d = 0; d < 2;  d++) {
+                                    while (isRecording && buffer[d].size() < FMCW.total * FMCW.len) {
+                                        buffer[d].add(queue[d].take());
+                                    }
+                                    if (!isRecording) return;
 
-                                for (int i = 0; i < FMCW.total * FMCW.len; i++) {
-                                received_data[i] = buffer.poll();
+                                    for (int i = 0; i < FMCW.total * FMCW.len; i++) {
+                                        received_data[i] = buffer[d].poll();
+                                    }
+                                    delta_distance[d] = FMCW.get_distance2(received_data, d);
+                                    if (acc_distance == null) {
+                                        acc_distance = new double[2][];
+                                        acc_distance[0] = new double[0];
+                                        acc_distance[1] = new double[0];
+                                        acc_distance[d] = delta_distance[d];
+                                    } else {
+                                        double[] temp = acc_distance[d];
+                                        acc_distance[d] = new double[temp.length + delta_distance[d].length];
+                                        System.arraycopy(temp, 0, acc_distance[d], 0, temp.length);
+                                        System.arraycopy(delta_distance[d], 0, acc_distance[d], temp.length, delta_distance[d].length);
+                                        if (acc_distance[d].length > 80) {
+                                            acc_distance[d] = Arrays.copyOfRange(acc_distance[d], acc_distance[d].length - 80, acc_distance[d].length);
+                                        }
+                                    }
+                                    draw_line_graph(signal_view[d], acc_distance[d]);
+                                }
+
+                                map_view.add_points(delta_distance[0], delta_distance[1]);
                             }
-                            double[] delta_distance = FMCW.get_distance2(received_data);
-                            if (acc_distance == null) {
-                                acc_distance = delta_distance;
-                            } else
-                            {
-                                double[] temp = acc_distance;
-                                acc_distance = new double[temp.length + delta_distance.length];
-                                System.arraycopy(temp, 0, acc_distance, 0, temp.length);
-                                System.arraycopy(delta_distance, 0, acc_distance, temp.length, delta_distance.length);
-                            }
-                            draw_line_graph(signal_view, acc_distance);
-                        }
 
                         } catch (InterruptedException e) {
                             System.out.println(e.getMessage());
@@ -148,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 start_button.setEnabled(true);
                 stop_button.setEnabled(false);
                 producer_thread.interrupt();
-                // consumer_thread.interrupt();
+                consumer_thread.interrupt();
+                acc_distance = null;
             }
         });
     }
@@ -229,7 +258,8 @@ public class MainActivity extends AppCompatActivity {
                 int bufferReadResult = audioRecord.read(buffer, 0, size_short);
                 for (int i = 0; i < bufferReadResult; i++) {
 //                    data_container[start_pos+i] = (double) buffer[i];
-                    queue.put((double) buffer[i]);
+                    queue[0].put((double) buffer[i]);
+                    queue[1].put((double) buffer[i]);
                 }
 //                start_pos+=bufferReadResult;
 //                if(start_pos+bufferReadResult>=limit_len)
